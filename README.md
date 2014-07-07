@@ -83,6 +83,26 @@ grunt.initConfig({
   },
 });
 ```
+
+### Ignore images
+
+Sometimes you may not want to smoosh image tag urls: Simple set the option to true to ignore them
+
+```js
+grunt.initConfig({
+  smoosher: {
+    all: {
+      options: {
+        ignoreImg: true
+      },
+      files: {
+        'dest-index.html': 'source-index.html',
+      },
+    },
+  },
+});
+```
+
 **Example**
 
 If the local cwd for your uncompiled file is `/Library/documents/server/src/html` then the above settings would resolve:
@@ -93,7 +113,7 @@ If the local cwd for your uncompiled file is `/Library/documents/server/src/html
 
 #### cssTags
 
-Defaults to 
+Defaults to
 
 ```js
 {
@@ -104,7 +124,7 @@ Defaults to
 
 #### jsTags
 
-Defaults to 
+Defaults to
 
 ```js
 {

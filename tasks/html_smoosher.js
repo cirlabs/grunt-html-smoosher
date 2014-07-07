@@ -20,8 +20,9 @@ module.exports = function(grunt) {
     var options = this.options({
       jsDir: "",
       cssDir: "",
-      minify: false
-    }); 
+      minify: false,
+      ignoreImg: false
+    });
 
     options.cssTags = this.options().cssTags || {
       start: '<style>',
@@ -64,7 +65,7 @@ module.exports = function(grunt) {
           //don't want to rel
           delete attributes.rel;
         }
-        
+
         if(url.parse(style).protocol) { return; }
         var filePath = (style.substr(0,1) === "/") ? path.resolve(options.cssDir, style.substr(1)) : path.join(path.dirname(filePair.src), style);
         grunt.log.writeln(('Including CSS: ').cyan + filePath);
@@ -90,13 +91,15 @@ module.exports = function(grunt) {
         $(this).replaceWith(options.jsTags.start + processInput(grunt.file.read(filePath)) + options.jsTags.end);
       });
 
-      $('img').each(function () {
-        var src = $(this).attr('src');
-        if (!src) { return; }
-        if (src.match(/^\/\//)) { return; }
-        if (url.parse(src).protocol) { return; }
-        $(this).attr('src', 'data:image/' + src.substr(src.lastIndexOf('.')+1) + ';base64,' + new Buffer(grunt.file.read(path.join(path.dirname(filePair.src), src), { encoding: null })).toString('base64'));
-      });
+      if (!options.ignoreImg) {
+        $('img').each(function () {
+          var src = $(this).attr('src');
+          if (!src) { return; }
+          if (src.match(/^\/\//)) { return; }
+          if (url.parse(src).protocol) { return; }
+          $(this).attr('src', 'data:image/' + src.substr(src.lastIndexOf('.')+1) + ';base64,' + new Buffer(grunt.file.read(path.join(path.dirname(filePair.src), src), { encoding: null })).toString('base64'));
+        });
+      }
 
       grunt.file.write(path.resolve(filePair.dest), $.html());
       grunt.log.writeln(('Created ').green + path.resolve(filePair.dest));
